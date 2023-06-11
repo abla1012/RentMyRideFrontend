@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 
-
 class MainActivity : ComponentActivity() {
     private val db by lazy {
         Room.databaseBuilder(
