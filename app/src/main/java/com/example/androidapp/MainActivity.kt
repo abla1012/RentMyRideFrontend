@@ -103,11 +103,11 @@ class MainActivity : ComponentActivity() {
             var number = 1
             loadFahrzeugeFromBackend().forEach {
 
-                //TODO beim ersten start auskommentieren
-                //saveBitmapImage(decodedString(it.fotoURL), number)
+                //TODO !!Nach dem ersten start auskommentieren
+                saveBitmapImage(decodedString(it.fotoURL), number)
 
                 Log.d("saveBitmapImage", "$pfad/$number.png")
-                number++;
+                number++
                 db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
             }
         }
