@@ -65,6 +65,7 @@ class FahrzeugViewModel(
                 val standort = state.value.standort
                 val ausstattung = state.value.ausstattung
                 val zeitraum = state.value.zeitraum
+                // TODO convert the picture in bas64String
                 val fotoURL = state.value.fotoURL
 
                 if(marke.isBlank() || name.isBlank()) {
