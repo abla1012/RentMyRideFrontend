@@ -239,7 +239,7 @@ class MainActivity : ComponentActivity() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun decodedString(base64String: String): Bitmap? {
+    private fun decodedString(base64String: String): Bitmap {
 
         var imageBytes: ByteArray
         var decodedImage:  Bitmap

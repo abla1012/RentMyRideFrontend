@@ -1,6 +1,5 @@
 package com.example.androidapp.Room
 
-import android.net.Uri
 import com.example.androidapp.Entity.Fahrzeug
 
 data class FahrzeugState(

@@ -8,7 +8,6 @@ import com.example.androidapp.retrofit.FahrzeugRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import java.lang.Exception
 
 @OptIn(ExperimentalCoroutinesApi::class)
