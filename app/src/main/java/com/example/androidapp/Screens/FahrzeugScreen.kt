@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.androidapp.R
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 import com.example.androidapp.Room.SortType
@@ -35,7 +36,7 @@ fun FahrzeugScreen(
     val expanded = remember { mutableStateOf(false) }
 
     Scaffold() { _ ->
-        if(state.isAddingFahrzeug) {
+        if (state.isAddingFahrzeug) {
             AddFahrzeugDialog(state = state, onEvent = onEvent)
         }
 
@@ -111,8 +112,13 @@ fun FahrzeugScreen(
                 ) {
                     Column {
                         Box(modifier = Modifier.aspectRatio(16f / 9f)) {
-                            Image(
-                                painter = rememberImagePainter(fahrzeug.fotoURL),
+
+                            Image(painter = rememberImagePainter(
+                                data = fahrzeug.fotoURL ?: R.drawable.imagenotfound,
+                                builder = {
+                                    //placeholder(R.drawable.imagenotfound)
+                                    error(R.drawable.imagenotfound)
+                                }),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop

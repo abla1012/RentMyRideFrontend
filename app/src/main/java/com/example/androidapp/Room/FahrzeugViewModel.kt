@@ -75,7 +75,7 @@ class FahrzeugViewModel(
                     return
                 }
 
-                Log.d("addFahrzeug", "foroURL = $fotoURL")
+                Log.d("addFahrzeug", "foroURL = ${fotoURL.isEmpty()}")
                 val base64Foto = ConvertPicture().bildUrlToDecodedString(fotoURL)
                 Log.d("addFahrzeug", "base64Foto = $base64Foto")
 
@@ -87,10 +87,11 @@ class FahrzeugViewModel(
                     standort = standort,
                     ausstattung = ausstattung,
                     zeitraum = zeitraum,
-                    fotoURL = fotoURL,
+                    fotoURL = fotoURL
                 )
                 viewModelScope.launch {
                     try {
+                        Log.d("addFahrzeug", "Foto is jetzt = ${fahrzeug.fotoURL}")
                         val id = dao.upsertFahrzeug(fahrzeug)
 
                         Log.d("AddFahrzeug()", "Neue Id = $id")

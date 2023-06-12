@@ -26,12 +26,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.androidapp.Entity.Fahrzeug
+import com.example.androidapp.R
 
 @Composable
 fun DetailScreen(fahrzeug: Fahrzeug, navController: NavHostController) {
@@ -60,10 +64,24 @@ fun DetailScreen(fahrzeug: Fahrzeug, navController: NavHostController) {
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 ) {
-                    Box {
+                    Box {/*
                         Image(
-                            painter = rememberImagePainter(fahrzeug.fotoURL),
+                            painter = rememberAsyncImagePainter(fahrzeug.fotoURL),
                             contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+
+                    */
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(data = fahrzeug.fotoURL)
+                                    .apply(block = fun ImageRequest.Builder.() {
+                                        //placeholder(R.drawable.imagenotfound)
+                                        error(R.drawable.imagenotfound)
+                                    }).build()
+                            ), contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -73,7 +91,9 @@ fun DetailScreen(fahrzeug: Fahrzeug, navController: NavHostController) {
             item {
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.padding(1.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(

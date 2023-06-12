@@ -44,7 +44,6 @@ import com.example.androidapp.Screens.FahrzeugScreen
 import com.example.androidapp.Screens.FavoritenScreen
 import com.example.androidapp.Screens.NachrichtenScreen
 import com.example.androidapp.retrofit.FahrzeugRepository
-import com.example.androidapp.retrofit.util.ConvertPicture
 import com.example.androidapp.ui.theme.RoomGuideAndroidTheme
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -80,7 +79,7 @@ class MainActivity : ComponentActivity() {
         var fahrzeuge = emptyList<Fahrzeug>()
         try {
             fahrzeuge = repository.getFahrzeuge().flatMapConcat { it.asFlow() }.toList()
-        }catch (e:Exception) {
+        } catch (e: Exception) {
             Log.d("onCreate", "${e.message}")
         }
         return fahrzeuge
@@ -91,17 +90,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //TODO Prüfen ob die bilder schon existieren (bei jedem start werden die bilder in den speicher geschrieben)
+        // TODO Prüfen ob die bilder schon existieren (bei jedem start werden die bilder in den speicher geschrieben)
         runBlocking {
             //db.dao.deleteAllFahrzeuge()
 
             // deviceManager -> explorer -> storage -> emulated -> 0 -> pictures -> RoomGuideAndroid
-            val pfad = "${Environment.getExternalStorageDirectory()}/Pictures/${getString(R.string.app_name)}"
+            val pfad =
+                "${Environment.getExternalStorageDirectory()}/Pictures/${getString(R.string.app_name)}"
             var number = 1
             loadFahrzeugeFromBackend().forEach {
 
-                //TODO !!Nach dem ersten start auskommentieren
-                //saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
+                // TODO !!Nach dem ersten start auskommentieren
+                // saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
+
+                // TODO Naming of pictures not optimal (-> name after id and delete all old pictures on start)
                 Log.d("saveBitmapImage", "$pfad/$number.png")
                 number++
                 val id = db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
@@ -256,7 +258,10 @@ class MainActivity : ComponentActivity() {
         values.put(MediaStore.Images.Media.DISPLAY_NAME, number)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Images.Media.DATE_TAKEN, timestamp)
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/" + getString(R.string.app_name))
+            values.put(
+                MediaStore.Images.Media.RELATIVE_PATH,
+                "Pictures/" + getString(R.string.app_name)
+            )
             values.put(MediaStore.Images.Media.IS_PENDING, true)
             val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             if (uri != null) {
@@ -279,7 +284,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         } else {
-            val imageFileFolder = File(Environment.getExternalStorageDirectory().toString() + '/' + getString(R.string.app_name))
+            val imageFileFolder = File(
+                Environment.getExternalStorageDirectory()
+                    .toString() + '/' + getString(R.string.app_name)
+            )
             if (!imageFileFolder.exists()) {
                 imageFileFolder.mkdirs()
             }
