@@ -95,7 +95,6 @@ class FahrzeugViewModel(
                         val id = dao.upsertFahrzeug(fahrzeug)
 
                         Log.d("AddFahrzeug()", "Neue Id = $id")
-                        // TODO bild url und base64 passt noch nich ganz
                         repository.addFahrzeug(fahrzeug.copy(fotoURL = base64Foto, id = id.toInt()))
                     }catch (e: Exception) {
                         Log.d("addFahrzeug()", "Fahrzeug konnte nicht hinzugefügt werden!")

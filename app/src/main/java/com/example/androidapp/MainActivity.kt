@@ -1,15 +1,10 @@
 package com.example.androidapp
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -44,15 +39,12 @@ import com.example.androidapp.Screens.FahrzeugScreen
 import com.example.androidapp.Screens.FavoritenScreen
 import com.example.androidapp.Screens.NachrichtenScreen
 import com.example.androidapp.retrofit.FahrzeugRepository
+import com.example.androidapp.retrofit.util.ConvertPicture
 import com.example.androidapp.ui.theme.RoomGuideAndroidTheme
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-
 
 class MainActivity : ComponentActivity() {
     private val db by lazy {
@@ -90,23 +82,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO Prüfen ob die bilder schon existieren (bei jedem start werden die bilder in den speicher geschrieben)
         runBlocking {
-            //db.dao.deleteAllFahrzeuge()
-
             // deviceManager -> explorer -> storage -> emulated -> 0 -> pictures -> RoomGuideAndroid
             val pfad =
                 "${Environment.getExternalStorageDirectory()}/Pictures/${getString(R.string.app_name)}"
-            var number = 1
+
+            val convertPicture = ConvertPicture()
+            convertPicture.deletePicturesOnStorage(pfad)
+
             loadFahrzeugeFromBackend().forEach {
-
-                // TODO !!Nach dem ersten start auskommentieren
-                // saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
-
-                // TODO Naming of pictures not optimal (-> name after id and delete all old pictures on start)
-                Log.d("saveBitmapImage", "$pfad/$number.png")
-                number++
-                val id = db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
+                val bildname = it.id
+                convertPicture.saveBitmapImage(
+                    convertPicture.encodedStringToBitmap(
+                        it.fotoURL,
+                        applicationContext
+                    ), bildname, applicationContext
+                )
+                Log.d("saveBitmapImage", "$pfad/$bildname.png")
+                val id = db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$bildname.png"))
                 Log.d("Start: ", "$id || $it")
             }
         }
@@ -239,78 +232,5 @@ class MainActivity : ComponentActivity() {
     fun SettingsScreen() {
         val state by viewModel.state.collectAsState()
         com.example.androidapp.Screens.SettingsScreen(state = state, onEvent = viewModel::onEvent)
-    }
-
-    /**
-     * Save Bitmap To Gallery
-     * @param bitmap The bitmap to be saved in Storage/Gallery
-     *
-     */
-    private fun saveBitmapImage(bitmap: Bitmap?, number: Int): String {
-        if (bitmap == null) return "Nope"
-
-        val timestamp = System.currentTimeMillis()
-
-        //Tell the media scanner about the new file so that it is immediately available to the user.
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, timestamp)
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, number)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Images.Media.DATE_TAKEN, timestamp)
-            values.put(
-                MediaStore.Images.Media.RELATIVE_PATH,
-                "Pictures/" + getString(R.string.app_name)
-            )
-            values.put(MediaStore.Images.Media.IS_PENDING, true)
-            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            if (uri != null) {
-                try {
-                    val outputStream = contentResolver.openOutputStream(uri)
-                    if (outputStream != null) {
-                        try {
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                            outputStream.close()
-                        } catch (e: Exception) {
-                            Log.e(TAG, "saveBitmapImage: ", e)
-                        }
-                    }
-                    values.put(MediaStore.Images.Media.IS_PENDING, false)
-                    contentResolver.update(uri, values, null, null)
-
-                    Toast.makeText(this, "Saved...", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Log.e(TAG, "saveBitmapImage: ", e)
-                }
-            }
-        } else {
-            val imageFileFolder = File(
-                Environment.getExternalStorageDirectory()
-                    .toString() + '/' + getString(R.string.app_name)
-            )
-            if (!imageFileFolder.exists()) {
-                imageFileFolder.mkdirs()
-            }
-            val mImageName = "$timestamp.png"
-            val imageFile = File(imageFileFolder, mImageName)
-            try {
-                val outputStream: OutputStream = FileOutputStream(imageFile)
-                try {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                    outputStream.close()
-                } catch (e: Exception) {
-                    Log.e(TAG, "saveBitmapImage: ", e)
-                }
-                values.put(MediaStore.Images.Media.DATA, imageFile.absolutePath)
-                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
-                Toast.makeText(this, "Saved...", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Log.e(TAG, "saveBitmapImage: ", e)
-            }
-
-            return mImageName
-        }
-        return "$timestamp.png"
     }
 }

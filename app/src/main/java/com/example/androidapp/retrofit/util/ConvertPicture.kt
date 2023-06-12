@@ -1,23 +1,32 @@
 package com.example.androidapp.retrofit.util
 
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.material.contentColorFor
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import com.example.androidapp.R
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class ConvertPicture {
+    fun deletePicturesOnStorage(pfad: String) {
+        val imageFileFolder = File(pfad)
+        Log.d("deletePicturesOnStorage", "pfad|$pfad, exists= ${imageFileFolder.exists()}")
+        if (imageFileFolder.exists()) {
+            imageFileFolder.deleteRecursively()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun bildUrlToDecodedString(bildpfad: String) : String {
+    fun bildUrlToDecodedString(bildpfad: String): String {
 
         try {
             val fileContent: ByteArray = File(bildpfad).readBytes()
@@ -30,15 +39,14 @@ class ConvertPicture {
     @RequiresApi(Build.VERSION_CODES.O)
     fun encodedStringToBitmap(base64String: String, context: Context): Bitmap {
 
-        var imageBytes: ByteArray
+        val imageBytes: ByteArray
         var decodedImage: Bitmap
 
         try {
             imageBytes = Base64.decode(base64String, Base64.DEFAULT)
             decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        } catch (e: Exception)
-        {
-            Log.d("MainActivity", "decodedStringFailed: "+e.message)
+        } catch (e: Exception) {
+            Log.d("MainActivity", "decodedStringFailed: " + e.message)
 
             val option = BitmapFactory.Options()
             option.inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -54,5 +62,77 @@ class ConvertPicture {
         return decodedImage
     }
 
+    /**
+     * Save Bitmap To Gallery
+     * @param bitmap The bitmap to be saved in Storage/Gallery
+     *
+     */
+    fun saveBitmapImage(bitmap: Bitmap?, number: Int, context: Context): String {
+        if (bitmap == null) return "Nope"
 
+        val timestamp = System.currentTimeMillis()
+
+        //Tell the media scanner about the new file so that it is immediately available to the user.
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        values.put(MediaStore.Images.Media.DATE_ADDED, timestamp)
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, number)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, timestamp)
+            values.put(
+                MediaStore.Images.Media.RELATIVE_PATH,
+                "Pictures/" + context.getString(R.string.app_name)
+            )
+            values.put(MediaStore.Images.Media.IS_PENDING, true)
+            val uri =
+                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            if (uri != null) {
+                try {
+                    val outputStream = context.contentResolver.openOutputStream(uri)
+                    if (outputStream != null) {
+                        try {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                            outputStream.close()
+                        } catch (e: Exception) {
+                            Log.e(ContentValues.TAG, "saveBitmapImage: ", e)
+                        }
+                    }
+                    values.put(MediaStore.Images.Media.IS_PENDING, false)
+                    context.contentResolver.update(uri, values, null, null)
+
+                    Toast.makeText(context, "Saved...", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Log.e(ContentValues.TAG, "saveBitmapImage: ", e)
+                }
+            }
+        } else {
+            val imageFileFolder = File(
+                Environment.getExternalStorageDirectory()
+                    .toString() + '/' + context.getString(R.string.app_name)
+            )
+            if (!imageFileFolder.exists()) {
+                imageFileFolder.mkdirs()
+            }
+            val mImageName = "$timestamp.png"
+            val imageFile = File(imageFileFolder, mImageName)
+            try {
+                val outputStream: OutputStream = FileOutputStream(imageFile)
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.close()
+                } catch (e: Exception) {
+                    Log.e(ContentValues.TAG, "saveBitmapImage: ", e)
+                }
+                values.put(MediaStore.Images.Media.DATA, imageFile.absolutePath)
+                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+                Toast.makeText(context, "Saved...", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e(ContentValues.TAG, "saveBitmapImage: ", e)
+            }
+
+            return mImageName
+        }
+        return "$timestamp.png"
+    }
 }
