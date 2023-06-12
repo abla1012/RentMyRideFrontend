@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -46,6 +44,7 @@ import com.example.androidapp.Screens.FahrzeugScreen
 import com.example.androidapp.Screens.FavoritenScreen
 import com.example.androidapp.Screens.NachrichtenScreen
 import com.example.androidapp.retrofit.FahrzeugRepository
+import com.example.androidapp.retrofit.util.ConvertPicture
 import com.example.androidapp.ui.theme.RoomGuideAndroidTheme
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -87,7 +86,6 @@ class MainActivity : ComponentActivity() {
         return fahrzeuge
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,8 +93,7 @@ class MainActivity : ComponentActivity() {
 
         //TODO Prüfen ob die bilder schon existieren (bei jedem start werden die bilder in den speicher geschrieben)
         runBlocking {
-            db.dao.deleteAllFahrzeuge()
-            //loadFahrzeugeFromBackend().forEach { db.dao.upsertFahrzeug(it) }
+            //db.dao.deleteAllFahrzeuge()
 
             // deviceManager -> explorer -> storage -> emulated -> 0 -> pictures -> RoomGuideAndroid
             val pfad = "${Environment.getExternalStorageDirectory()}/Pictures/${getString(R.string.app_name)}"
@@ -104,11 +101,11 @@ class MainActivity : ComponentActivity() {
             loadFahrzeugeFromBackend().forEach {
 
                 //TODO !!Nach dem ersten start auskommentieren
-                saveBitmapImage(decodedString(it.fotoURL), number)
-
+                saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
                 Log.d("saveBitmapImage", "$pfad/$number.png")
                 number++
-                db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
+                val id = db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
+                Log.d("Start: ", "$id || $it")
             }
         }
 
@@ -169,6 +166,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun NavigationHost(
         navController: NavHostController,
@@ -203,6 +201,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun FavoritesScreen() {
 
@@ -211,6 +210,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun SearchScreen(state: FahrzeugState, navController: NavHostController) {
 
@@ -218,6 +218,7 @@ class MainActivity : ComponentActivity() {
         FahrzeugScreen(state = state, onEvent = viewModel::onEvent, navController = navController)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun PostScreen() {
 
@@ -231,49 +232,11 @@ class MainActivity : ComponentActivity() {
         NachrichtenScreen()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun SettingsScreen() {
         val state by viewModel.state.collectAsState()
         com.example.androidapp.Screens.SettingsScreen(state = state, onEvent = viewModel::onEvent)
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun decodedString(base64String: String): Bitmap {
-
-        var imageBytes: ByteArray
-        var decodedImage:  Bitmap
-
-        try {
-            imageBytes = Base64.decode(base64String, Base64.DEFAULT)
-            decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        } catch (e: Exception)
-        {
-            Log.d("MainActivity", "decodedStringFailed: "+e.message)
-
-            val path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES
-            )
-            val file = File(path, "imagenotfound.jpg")
-            val bildpfad = file.absolutePath
-
-            Log.d("MainActivity", "bildpfad: "+bildpfad)
-
-            val bild = bildToString(bildpfad)
-            imageBytes = Base64.decode(bild, Base64.DEFAULT)
-            decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        }
-
-        return decodedImage
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun bildToString(bildpfad: String) : String {
-
-        val fileContent: ByteArray = File(bildpfad).readBytes()
-        val encodedString = java.util.Base64.getEncoder().encodeToString(fileContent)
-
-        return encodedString
     }
 
     /**

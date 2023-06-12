@@ -1,10 +1,13 @@
 package com.example.androidapp.Room
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidapp.Entity.Fahrzeug
 import com.example.androidapp.retrofit.FahrzeugRepository
+import com.example.androidapp.retrofit.util.ConvertPicture
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,6 +41,7 @@ class FahrzeugViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FahrzeugState())
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: FahrzeugEvent) {
         when(event) {
             is FahrzeugEvent.DeleteFahrzeug -> {
@@ -71,6 +75,10 @@ class FahrzeugViewModel(
                     return
                 }
 
+                Log.d("addFahrzeug", "foroURL = $fotoURL")
+                val base64Foto = ConvertPicture().bildUrlToDecodedString(fotoURL)
+                Log.d("addFahrzeug", "base64Foto = $base64Foto")
+
                 val fahrzeug = Fahrzeug(
                     marke = marke,
                     name = name,
@@ -83,8 +91,11 @@ class FahrzeugViewModel(
                 )
                 viewModelScope.launch {
                     try {
-                        repository.addFahrzeug(fahrzeug)
-                        dao.upsertFahrzeug(fahrzeug)
+                        val id = dao.upsertFahrzeug(fahrzeug)
+
+                        Log.d("AddFahrzeug()", "Neue Id = $id")
+                        // TODO bild url und base64 passt noch nich ganz
+                        repository.addFahrzeug(fahrzeug.copy(fotoURL = base64Foto, id = id.toInt()))
                     }catch (e: Exception) {
                         Log.d("addFahrzeug()", "Fahrzeug konnte nicht hinzugefügt werden!")
                     }

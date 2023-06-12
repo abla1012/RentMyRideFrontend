@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface FahrzeugDao {
 
     @Upsert
-    suspend fun upsertFahrzeug(fahrzeug: Fahrzeug)
+    suspend fun upsertFahrzeug(fahrzeug: Fahrzeug): Long
 
     @Delete
     suspend fun deleteFahrzeug(fahrzeug: Fahrzeug)

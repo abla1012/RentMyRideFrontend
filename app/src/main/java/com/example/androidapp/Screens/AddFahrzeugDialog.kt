@@ -35,6 +35,7 @@ fun AddFahrzeugDialog(
     if (selectedImageUri != null) {
         onEvent(FahrzeugEvent.SetFotoURL(selectedImageUri.toString()))
     }
+
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImageUri = uri }
