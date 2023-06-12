@@ -16,11 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.androidapp.R
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
@@ -113,12 +116,15 @@ fun FahrzeugScreen(
                     Column {
                         Box(modifier = Modifier.aspectRatio(16f / 9f)) {
 
-                            Image(painter = rememberImagePainter(
-                                data = fahrzeug.fotoURL ?: R.drawable.imagenotfound,
-                                builder = {
-                                    //placeholder(R.drawable.imagenotfound)
-                                    error(R.drawable.imagenotfound)
-                                }),
+                            Image(painter = //placeholder(R.drawable.imagenotfound)
+                            rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(data = fahrzeug.fotoURL ?: R.drawable.imagenotfound)
+                                    .apply(block = fun ImageRequest.Builder.() {
+                                        //placeholder(R.drawable.imagenotfound)
+                                        error(R.drawable.imagenotfound)
+                                    }).build()
+                            ),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
