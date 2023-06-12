@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
             loadFahrzeugeFromBackend().forEach {
 
                 //TODO !!Nach dem ersten start auskommentieren
-                saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
+                //saveBitmapImage(ConvertPicture().encodedStringToBitmap(it.fotoURL, applicationContext), number)
                 Log.d("saveBitmapImage", "$pfad/$number.png")
                 number++
                 val id = db.dao.upsertFahrzeug(it.copy(fotoURL = "$pfad/$number.png"))
