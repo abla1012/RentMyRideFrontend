@@ -28,12 +28,12 @@ class ConvertPicture {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun bildUrlToDecodedStringFromActivityResult(uri: String, context: Context): String {
-        val decodedPicture = ""
+        var decodedPicture = ""
         try {
             val item = context.contentResolver.openInputStream(uri.toUri())
             val bytes = item?.readBytes()
             item?.close()
-            val decodedPicture = java.util.Base64.getEncoder().encodeToString(bytes)
+            decodedPicture = java.util.Base64.getEncoder().encodeToString(bytes)
             Log.d("bildUrlToDecodedStringFromActivityResult()", "decidedPicture=$decodedPicture")
         } catch (e: Exception) {
             Log.d("bildUrlToDecodedStringFromActivityResult()", "${e.message}")
