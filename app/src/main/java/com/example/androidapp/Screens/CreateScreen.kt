@@ -16,6 +16,11 @@ import androidx.compose.ui.unit.sp
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 
+/**
+Composable-Funktion, die die Hauptansicht für die Fahrzeugerstellung rendert.
+@param state Der Zustand der Fahrzeugerstellung, der die aktuellen Werte der Fahrzeugattribute und den Zustand der Dialogansicht enthält.
+@param onEvent Eine Callback-Funktion, die aufgerufen wird, wenn ein Event in der Hauptansicht ausgelöst wird.
+ */
 @Composable
 fun CreateScreen(
     state: FahrzeugState,

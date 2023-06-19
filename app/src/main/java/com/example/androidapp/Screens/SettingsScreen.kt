@@ -14,6 +14,11 @@ import androidx.compose.ui.unit.sp
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 
+/**
+Composable-Funktion, die die Ansicht für den Einstellungsbildschirm rendert.
+@param state Der aktuelle Zustand des Fahrzeugmoduls.
+@param onEvent Die Funktion zum Auslösen von Ereignissen im Fahrzeugmodul.
+ */
 @Composable
 fun SettingsScreen(
     state: FahrzeugState,
@@ -45,6 +50,11 @@ fun SettingsScreen(
     }
 }
 
+/**
+Composable-Funktion, die ein einzelnes Einstellungselement rendert.
+@param text Der Text des Einstellungselements.
+@param backgroundColor Die Hintergrundfarbe des Einstellungselements.
+ */
 @Composable
 fun SettingsItem(
     text: String,

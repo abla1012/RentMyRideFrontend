@@ -14,12 +14,17 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
+// Trennt die Logik der Benutzeroberfläche von der Geschäftslogik
+// (Stellt Daten aus dem Model für die Anzeige in der View bereit
+// Verwaltet den Zustand der View)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class FahrzeugViewModel(
     private val dao: FahrzeugDao,
     application: Application
 ) : AndroidViewModel(application) {
 
+    //
     private val repository = FahrzeugRepository()
 
     private val _sortType = MutableStateFlow(SortType.MARKE)
@@ -75,9 +80,9 @@ class FahrzeugViewModel(
                 val standort = state.value.standort
                 val ausstattung = state.value.ausstattung
                 val zeitraum = state.value.zeitraum
-                // TODO convert the picture in bas64String
                 val fotoURL = state.value.fotoURL
 
+                // Validierung der Eingabe
                 if (marke.isBlank() || name.isBlank()) {
                     return
                 }

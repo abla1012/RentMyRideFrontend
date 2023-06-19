@@ -17,7 +17,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
+// Klasse für das Verarbeiten von Bildern
 class ConvertPicture {
+
+    // Bilder im Storage des Handy löschen
     fun deletePicturesOnStorage(pfad: String) {
         val imageFileFolder = File(pfad)
         Log.d("deletePicturesOnStorage", "pfad|$pfad, exists= ${imageFileFolder.exists()}")
@@ -26,6 +29,7 @@ class ConvertPicture {
         }
     }
 
+    // Bild vom Handy laden und in einen String convertieren
     @RequiresApi(Build.VERSION_CODES.O)
     fun bildUrlToDecodedStringFromActivityResult(uri: String, context: Context): String {
         var decodedPicture = ""
@@ -55,6 +59,7 @@ class ConvertPicture {
         }
     }
 
+    // Bild vom String in eine Bitmap umwandeln
     @RequiresApi(Build.VERSION_CODES.O)
     fun encodedStringToBitmap(base64String: String, context: Context): Bitmap {
 
@@ -81,11 +86,8 @@ class ConvertPicture {
         return decodedImage
     }
 
-    /**
-     * Save Bitmap To Gallery
-     * @param bitmap The bitmap to be saved in Storage/Gallery
-     *
-     */
+
+    // Bitmap auf dem Handy speichern
     fun saveBitmapImage(bitmap: Bitmap?, number: Int, context: Context): String {
         if (bitmap == null) return "Nope"
 

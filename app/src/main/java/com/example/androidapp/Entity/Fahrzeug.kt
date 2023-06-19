@@ -3,6 +3,7 @@ package com.example.androidapp.Entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// Fahrzeug Entity Klasse
 @Entity
 data class Fahrzeug(
     val marke: String,

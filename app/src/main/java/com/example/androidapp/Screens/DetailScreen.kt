@@ -37,6 +37,11 @@ import coil.request.ImageRequest
 import com.example.androidapp.Entity.Fahrzeug
 import com.example.androidapp.R
 
+/**
+Composable-Funktion, der die Detailansicht eines Fahrzeugs rendert.
+@param fahrzeug Das Fahrzeugobjekt, dessen Details angezeigt werden sollen.
+@param navController Der Navigation Controller, der für die Navigation zwischen Ansichten verwendet wird.
+ */
 @Composable
 fun DetailScreen(fahrzeug: Fahrzeug, navController: NavHostController) {
     Scaffold(

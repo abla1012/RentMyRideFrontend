@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
+// Navigation der App
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Favorites : Screen("favorites", "Favoriten", Icons.Filled.Favorite)
     object Search : Screen("search", "Suche", Icons.Filled.Search)

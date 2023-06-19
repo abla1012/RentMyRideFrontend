@@ -8,7 +8,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
+// Eine Instanz wird erstellt (Singelton), auf die global auf zugegriffen werden kann
+// um Netzwerkanfragen an die API zu senden und die Rückgabewerte zu verarbeiten.
 object ApiClient {
     val retrofit: Retrofit by lazy {
         val interceptor = HttpLoggingInterceptor()

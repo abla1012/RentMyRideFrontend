@@ -14,6 +14,11 @@ import androidx.compose.ui.unit.sp
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 
+/**
+Composable-Funktion, die die Ansicht für die Favoritenliste rendert.
+@param state Der Zustand der Favoritenansicht.
+@param onEvent Die Callback-Funktion, die auf Fahrzeugereignisse reagiert.
+ */
 @Composable
 fun FavoritenScreen(
     state: FahrzeugState,

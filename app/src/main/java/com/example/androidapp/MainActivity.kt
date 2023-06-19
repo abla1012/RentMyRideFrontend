@@ -46,7 +46,11 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 
+// Hauptaktivität der App, die beim Starten der Anwendung geladen wird.
+// Einstiegspunkt für die Benutzeroberfläche und steuert den Ablauf der App.
 class MainActivity : ComponentActivity() {
+
+    // Datenbank bauen und laden
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
@@ -55,6 +59,7 @@ class MainActivity : ComponentActivity() {
         ).build()
     }
 
+    // Viewmodel bauen und laden
     private val viewModel by viewModels<FahrzeugViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
@@ -65,6 +70,7 @@ class MainActivity : ComponentActivity() {
         }
     )
 
+    // Fahrzeuge beim Start der App Laden
     suspend fun loadFahrzeugeFromBackend(): List<Fahrzeug> {
         val repository = FahrzeugRepository()
         repository.getFahrzeuge()
@@ -77,19 +83,25 @@ class MainActivity : ComponentActivity() {
         return fahrzeuge
     }
 
+    // Die Methode onCreate wird aufgerufen, wenn die Aktivität erstellt wird
+    // Überschreiben um Aktivität entsprechend den Anforderungen der App anpassen
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // blockierende Ausführung, ohne die Coroutine-Infrastruktur verwenden zu müssen
         runBlocking {
             // deviceManager -> explorer -> storage -> emulated -> 0 -> pictures -> RoomGuideAndroid
             val pfad =
                 "${Environment.getExternalStorageDirectory()}/Pictures/${getString(R.string.app_name)}"
 
             val convertPicture = ConvertPicture()
+
+            // Bilder auf dem Hany löschen
             convertPicture.deletePicturesOnStorage(pfad)
 
+            // FahrzeugObjekte aus dem BackendServer in die Lokale DB speichern und Bilder auf das Handy laden
             loadFahrzeugeFromBackend().forEach {
                 val bildname = it.id
                 convertPicture.saveBitmapImage(
@@ -104,6 +116,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // UI wird gesetzt
         setContent {
             RoomGuideAndroidTheme {
                 val navController = rememberNavController()
@@ -123,6 +136,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Bottom Navigation Bar definiert
     @Composable
     fun BottomNavigationBar(navController: NavHostController) {
         val items = listOf(
@@ -132,6 +146,7 @@ class MainActivity : ComponentActivity() {
             Screen.Messages,
             Screen.Settings
         )
+        // Definiert Items der Bottom Navigation Bar
         BottomNavigation {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -161,6 +176,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Code zur Erstellung und Verwaltung der Navigation der APP
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun NavigationHost(
@@ -196,6 +212,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Beschreibt UI für FavoritesScreen der App
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun FavoritesScreen() {
@@ -204,7 +221,7 @@ class MainActivity : ComponentActivity() {
         FavoritenScreen(state = state, onEvent = viewModel::onEvent)
     }
 
-
+    // Beschreibt UI für SearchScreen der App
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun SearchScreen(state: FahrzeugState, navController: NavHostController) {
@@ -213,6 +230,7 @@ class MainActivity : ComponentActivity() {
         FahrzeugScreen(state = state, onEvent = viewModel::onEvent, navController = navController)
     }
 
+    // Beschreibt UI für PostScreen der App
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun PostScreen() {
@@ -221,12 +239,14 @@ class MainActivity : ComponentActivity() {
         CreateScreen(state = state, onEvent = viewModel::onEvent)
     }
 
+    // Beschreibt UI für MessageScreen der App
     @Composable
     fun MessagesScreen() {
         val state by viewModel.state.collectAsState()
         NachrichtenScreen()
     }
 
+    // Beschreibt UI für SettingsScreen der App
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun SettingsScreen() {

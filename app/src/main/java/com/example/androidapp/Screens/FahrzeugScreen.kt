@@ -28,7 +28,12 @@ import com.example.androidapp.R
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 import com.example.androidapp.Room.SortType
-
+/**
+Composable-Funktion, die die Ansicht für die FahrzeugSuche rendert.
+@param state Der Zustand der Fahrzeugansicht.
+@param onEvent Die Callback-Funktion, die auf Fahrzeugereignisse reagiert.
+@param navController Der Navigation Controller, der für die Navigation zwischen Ansichten verwendet wird.
+ */
 @Composable
 fun FahrzeugScreen(
     state: FahrzeugState,

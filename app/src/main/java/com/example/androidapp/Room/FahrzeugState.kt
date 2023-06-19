@@ -2,6 +2,7 @@ package com.example.androidapp.Room
 
 import com.example.androidapp.Entity.Fahrzeug
 
+//  Datenklasse, die die relevanten Datenfelder enthält, die den Zustand der Benutzeroberfläche beschreiben.
 data class FahrzeugState(
     val fahrzeuge: List<Fahrzeug> = emptyList(),
     val marke: String = "",

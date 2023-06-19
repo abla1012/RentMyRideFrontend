@@ -6,6 +6,28 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
+// Das Theme und die Benutzeroberfläche für die App zu konfigurieren
+// Farben, Schriftarten und andere Erscheinungsbilder anpassen,
+// Ressourcen laden und das Aussehen der Benutzeroberfläche entsprechend anzupassen.
+@Composable
+fun RoomGuideAndroidTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}
+
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
@@ -26,22 +48,3 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
-
-@Composable
-fun RoomGuideAndroidTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
-}

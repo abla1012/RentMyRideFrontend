@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 
+// Klasse als Vermittler zwischen dem Backendserver und der App
+// Kapselt die Logik für das Abrufen, Speichern und Manipulieren von Daten und bietet eine einheitliche Schnittstelle für den Zugriff auf diese Daten.
 class FahrzeugRepository {
     private val apiService = ApiClient.apiInterface
 

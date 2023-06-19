@@ -13,6 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androidapp.R
 
+/**
+Composable-Funktion, die die Ansicht für den Nachrichtenbildschirm rendert.
+ */
 @Composable
 fun NachrichtenScreen() {
     Column(
@@ -50,6 +53,12 @@ fun NachrichtenScreen() {
     }
 }
 
+/**
+Composable-Funktion, die ein einzelnes Nachrichtenitem rendert.
+@param iconResId Die Ressourcen-ID des Icons.
+@param name Der Name des Absenders.
+@param message Die Nachricht.
+ */
 @Composable
 fun NachrichtenItem(
     iconResId: Int,

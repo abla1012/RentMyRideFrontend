@@ -23,6 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.example.androidapp.Room.FahrzeugEvent
 import com.example.androidapp.Room.FahrzeugState
 
+/**
+Composable-Funktion, die ein Dialogfenster zum Hinzufügen eines Fahrzeugs rendert.
+@param state Der Zustand des Fahrzeugs, der die aktuellen Werte der Fahrzeugattribute enthält.
+@param onEvent Eine Callback-Funktion, die aufgerufen wird, wenn ein Event im Dialog ausgelöst wird.
+@param modifier Ein optionaler Modifier, um das Aussehen und Verhalten des Dialogs anzupassen.
+ */
 @Composable
 fun AddFahrzeugDialog(
     state: FahrzeugState,
