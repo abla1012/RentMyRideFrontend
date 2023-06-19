@@ -24,10 +24,13 @@ class FahrzeugViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    //
+    // Zugriff auf Backendserver
     private val repository = FahrzeugRepository()
 
+    // Definiert den Sortiertyp zu Beginn für die Fahrzeuge
     private val _sortType = MutableStateFlow(SortType.MARKE)
+
+    // Ruft den Sortiertyp ab und speichert ihn im StateFlow
     private val _fahrzeuge = _sortType
         .flatMapLatest { sortType ->
             when (sortType) {
@@ -49,9 +52,12 @@ class FahrzeugViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FahrzeugState())
 
+    // Behandelt verschiedene Ereignisse, die das ViewModel beeinflussen
     @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: FahrzeugEvent) {
         when (event) {
+
+            // Löschen eines Fahrzeuges Falls das Event eintritt
             is FahrzeugEvent.DeleteFahrzeug -> {
                 viewModelScope.launch {
                     try {
@@ -64,6 +70,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Dialogfeld schließen Falls das Event eintritt
             FahrzeugEvent.HideDialog -> {
                 _state.update {
                     it.copy(
@@ -72,6 +79,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Fahrzeug im Backend speichern Falls dar Event eintritt
             FahrzeugEvent.SaveFahrzeug -> {
                 val marke = state.value.marke
                 val name = state.value.name
@@ -132,6 +140,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Marke updaten Falls das Event eintritt
             is FahrzeugEvent.SetMarke -> {
                 _state.update {
                     it.copy(
@@ -140,6 +149,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Name updaten Falls das Event eintritt
             is FahrzeugEvent.SetName -> {
                 _state.update {
                     it.copy(
@@ -148,6 +158,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Ps updaten Falls das Event eintritt
             is FahrzeugEvent.SetPS -> {
                 _state.update {
                     it.copy(
@@ -156,6 +167,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Preis updaten Falls das Event eintritt
             is FahrzeugEvent.SetPreis -> {
                 _state.update {
                     it.copy(
@@ -164,6 +176,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Standort updaten Falls das Event eintritt
             is FahrzeugEvent.SetStandort -> {
                 _state.update {
                     it.copy(
@@ -172,6 +185,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Ausstattung updaten Falls das Event eintritt
             is FahrzeugEvent.SetAusstattung -> {
                 _state.update {
                     it.copy(
@@ -180,6 +194,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Zeitraum updaten Falls das Event eintritt
             is FahrzeugEvent.SetZeitraum -> {
                 _state.update {
                     it.copy(
@@ -188,6 +203,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // BildUrl updaten Falls das Event eintritt
             is FahrzeugEvent.SetFotoURL -> {
                 _state.update {
                     it.copy(
@@ -196,6 +212,7 @@ class FahrzeugViewModel(
                 }
             }
 
+            // Dialogfeld öffnen Falls das Event eintritt
             FahrzeugEvent.ShowDialog -> {
                 _state.update {
                     it.copy(

@@ -16,10 +16,8 @@ interface FahrzeugDao {
     suspend fun deleteFahrzeug(fahrzeug: Fahrzeug)
 
     // Löscht alle Fahrzeuge aus der Datenbank.
-    @Query("DELETE FROM fahrzeug")
-    suspend fun deleteAllFahrzeuge()
-
-    // TODO Löschen: Ruft alle Fahrzeuge aus der Datenbank ab und ordnet sie nach 'marke' aufsteigend.
+    //@Query("DELETE FROM fahrzeug")
+    //suspend fun deleteAllFahrzeuge()
     @Query("SELECT * FROM fahrzeug ORDER BY marke ASC")
     fun getFahrzeugeOrderedByMarke(): Flow<List<Fahrzeug>>
 
