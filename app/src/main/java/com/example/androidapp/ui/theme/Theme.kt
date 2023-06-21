@@ -17,7 +17,8 @@ fun RoomGuideAndroidTheme(
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
-        LightColorPalette
+        //ColorPalette
+        DarkColorPalette
     }
 
     MaterialTheme(

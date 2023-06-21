@@ -1,6 +1,7 @@
 package com.example.androidapp.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -50,7 +52,7 @@ fun FahrzeugScreen(
 
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(color = Color(0x121212)),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {

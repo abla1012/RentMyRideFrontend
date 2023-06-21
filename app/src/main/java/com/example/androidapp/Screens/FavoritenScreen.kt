@@ -27,7 +27,8 @@ fun FavoritenScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            //.background(Color.Black)
+            .background(color= Color(0x121212))
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally

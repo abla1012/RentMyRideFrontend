@@ -90,6 +90,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         // blockierende Ausführung, ohne die Coroutine-Infrastruktur verwenden zu müssen
         runBlocking {
             // deviceManager -> explorer -> storage -> emulated -> 0 -> pictures -> RoomGuideAndroid

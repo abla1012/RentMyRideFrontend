@@ -58,7 +58,8 @@ Composable-Funktion, die ein einzelnes Einstellungselement rendert.
 @Composable
 fun SettingsItem(
     text: String,
-    backgroundColor: Color = Color(0xFF4B4B4B),
+    //backgroundColor: Color = Color(0xFF4B4B4B),
+    backgroundColor: Color = Color(0x121212),
 ) {
     Box(
         modifier = Modifier
