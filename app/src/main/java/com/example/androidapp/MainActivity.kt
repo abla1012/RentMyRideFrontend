@@ -1,6 +1,7 @@
 package com.example.androidapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -10,9 +11,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -46,9 +50,11 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 
+
 // Hauptaktivität der App, die beim Starten der Anwendung geladen wird.
 // Einstiegspunkt für die Benutzeroberfläche und steuert den Ablauf der App.
 class MainActivity : ComponentActivity() {
+    private var verbindungErfolgreichAufgebaut = false
 
     // Datenbank bauen und laden
     private val db by lazy {
@@ -77,6 +83,7 @@ class MainActivity : ComponentActivity() {
         var fahrzeuge = emptyList<Fahrzeug>()
         try {
             fahrzeuge = repository.getFahrzeuge().flatMapConcat { it.asFlow() }.toList()
+            verbindungErfolgreichAufgebaut = true
         } catch (e: Exception) {
             Log.d("onCreate", "${e.message}")
         }
@@ -89,7 +96,6 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
 
         // blockierende Ausführung, ohne die Coroutine-Infrastruktur verwenden zu müssen
@@ -135,7 +141,25 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
+            if (!verbindungErfolgreichAufgebaut) {
+                Button(onClick = { runBlocking { restartActivity() } },
+                    contentPadding = PaddingValues(
+                        start = 20.dp,
+                        top = 12.dp,
+                        end = 20.dp,
+                        bottom = 12.dp
+                    )
+                ) {
+                    Text(text = "Die Fahrzeuge konnten nicht gladen werden. Bitte hier klicken, um den Verbindungsaufbau erneut zu starten!")
+                }
+            }
         }
+
+    }
+
+    fun restartActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     // Bottom Navigation Bar definiert
