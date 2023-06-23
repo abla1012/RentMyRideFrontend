@@ -1,7 +1,7 @@
 ﻿# RentMyRideFrontend
 
 
-1. RentMyRideBackend starten: -> gradle bootrun
+1. RentMyRideBackend starten: -> poweshell öffnen -> in den pfad navigieren -> gradle bootrun
 
 2. Powershell öffnen: -> ipconfig eingeben -> ipv4 adresse kopieren
    
