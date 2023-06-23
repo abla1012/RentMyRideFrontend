@@ -42,7 +42,7 @@ fun NachrichtenScreen() {
             NachrichtenItem(
                 iconResId = R.drawable.person_icon,
                 name = "Kinen Oilmen",
-                message = "Kannst das Auto gern morgen Abend abholen sach ich mal"
+                message = "Kannst das Auto gern morgen Abend abholen."
             )
 
             NachrichtenItem(
